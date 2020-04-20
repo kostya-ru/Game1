@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', function () {
     let container = document.querySelector('.container'),
         header = document.querySelector('header');
 
-    //функция создания игровоого поля, где q — кол-во кнопок
+    //функция создания игрового поля, где q — кол-во кнопок
     const createField = function (q) {
         for (let i = 0; i < q; i++) {
             let newBtn = document.createElement('div');
