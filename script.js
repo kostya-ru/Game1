@@ -2,7 +2,8 @@
 window.addEventListener('DOMContentLoaded', function () {
 
     let container = document.querySelector('.container'),
-        header = document.querySelector('header');
+        header = document.querySelector('header'),
+        quantity = 15;
 
     //функция создания игровоого поля, где q — кол-во кнопок
     const createField = function (q) {
@@ -13,26 +14,24 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    createField(15);
+    createField(quantity);
 
-
-    //определяем массив с кнопками, определяем в нём случайную проигрышную, красим для наглядности
+    //определяем массив с кнопками и счётчик нажатий
     let btn = document.querySelectorAll('.button'),
         rand = 0,
-        clicked = 1;
-    console.log(rand);
-    //btn[rand].style.backgroundColor = 'red';
+        clicked = 0;
 
     //функция проигрышной кнопки
     const endGame = function () {
-        for (let i = 0; i < btn.length; i++) {
-            if (i == rand) {
-                btn[i].textContent = 'AGAIN';
+
+        btn.forEach((item, index) => {
+            if (index === rand) {
+                item.textContent = 'AGAIN';
             } else {
-                btn[i].textContent = 'YOU LOSE';
-                btn[i].removeEventListener('click', notLose);
+                item.textContent = 'YOU LOSE';
+                item.removeEventListener('click', notLose);
             }
-        }
+        });
         let audio = new Audio('loser.mp3');
         audio.play();
         header.textContent = 'You lose!';
@@ -41,33 +40,31 @@ window.addEventListener('DOMContentLoaded', function () {
         btn[rand].addEventListener('click', newGame);
     };
 
-    //функция начала новой игры
+    //функция начала новой игры (проигрышную кнопку красим для наглядности, строка закомментирована)
     const newGame = function () {
-        console.log(header);
         header.textContent = 'Push any button!';
         btn[rand].style.backgroundColor = '#93f5f3';
         btn[rand].removeEventListener('click', newGame);
         rand = ((Math.random()) * (btn.length - 1)).toFixed();
-        clicked = 1;
+        clicked = 0;
         //btn[rand].style.backgroundColor = 'red';
-        for (let i = 0; i < btn.length; i++) {
-            btn[i].textContent = '';
-            if (i == rand) {
-                btn[i].addEventListener('click', endGame);
-            } else {
-                btn[i].addEventListener('click', notLose);
-            }
-        }
         console.log(rand);
-    };
+        btn.forEach((item, index) => {
+            item.textContent = '';
+            if (index == rand) {
+                item.addEventListener('click', endGame);
+            } else {
+                item.addEventListener('click', notLose);
+            }
+        });
+    }
 
     //функция действий всех кнопок, кроме кнопки проигрыша, вписываем в каждую нажатую кнопку счётчик
     const notLose = function (event) {
+        clicked++;
         event.target.textContent = clicked;
         event.target.removeEventListener('click', notLose);
-        console.log(clicked);
-        clicked++;
-        if(clicked == 15){
+        if (clicked === (quantity - 1)) {
             let audio = new Audio('winner.mp3');
             audio.play();
             btn[rand].textContent = 'AGAIN';
